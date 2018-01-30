@@ -24,6 +24,12 @@ class User(db.Model):
     zipcode = db.Column(db.String(15), nullable=True)
     ratings = db.relationship("Rating")
 
+    def __repr__(self):
+        """Provide helpful representation about a user when printed."""
+
+        return "<User user_id={} email={}>".format(self.user_id,
+                                                   self.email)
+        
 
 # Put your Movie and Rating model classes here.
 class Movie(db.Model):
@@ -32,9 +38,9 @@ class Movie(db.Model):
     __tablename__ = "movies"
 
     movie_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    title = db.Column(db.String(100))
-    released_at = db.Column(db.DateTime)
-    imdb_url = db.Column(db.String(150), nullable=True)
+    title = db.Column(db.String(500), nullable=False)
+    released_at = db.Column(db.DateTime, nullable=True)
+    imdb_url = db.Column(db.String(500), nullable=True)
     ratings = db.relationship("Rating")
 
 
