@@ -29,7 +29,7 @@ class User(db.Model):
 
         return "<User user_id={} email={}>".format(self.user_id,
                                                    self.email)
-        
+
 
 # Put your Movie and Rating model classes here.
 class Movie(db.Model):
@@ -42,6 +42,12 @@ class Movie(db.Model):
     released_at = db.Column(db.DateTime, nullable=True)
     imdb_url = db.Column(db.String(500), nullable=True)
     ratings = db.relationship("Rating")
+
+    def __repr__(self):
+        """Provide helpful representation about a Movie when printed."""
+
+        return "<Movie movie_id={} title={}>".format(self.movie_id,
+                                                   self.title)
 
 
 class Rating(db.Model):
@@ -56,6 +62,12 @@ class Rating(db.Model):
 
     user = db.relationship("User")
     movie = db.relationship("Movie")
+
+    def __repr__(self):
+        """Provide helpful representation about a Rating for Movie when printed."""
+
+        return "<Rating rating_id={} movie_title={} score={}>".format(self.rating_id,
+                                                   self.movie.title, self.score)
 
 ##############################################################################
 # Helper functions
