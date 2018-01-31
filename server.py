@@ -43,7 +43,7 @@ def user_profile(id):
     return render_template("user_detail.html", user=user)
 
 
-@app.route("/sign-up")
+@app.route("/register", methods=["GET"])
 def user_sign_up_form():
     """ Display sign up form """
 
@@ -56,12 +56,10 @@ def user_registration():
 
     email = request.form.get("email")
     password = request.form.get("password")
-    zipcode = request.form.get("zip")
-    age = request.form.get("age")
-
+    zipcode = request.form.get("zip")  
     query = db.session.query('User')
     users_emails = query.filter(User.email == email).all()
-    print users_emails
+
     if users_emails:
         flash("User already exists!")
         return redirect('/sign-up')
@@ -74,7 +72,7 @@ def user_registration():
         return redirect('/')
 
 
-@app.route("/login-form")
+@app.route("/login", methods=["GET"])
 def user_login_form():
     """ Display Login form """
 
@@ -87,12 +85,9 @@ def user_login():
 
     email = request.form.get("email")
     password = request.form.get("password")
-
-    #query = db.session.query('User')
     query_user = User.query.filter_by(email=email).first()
-    print query_user
 
-    if query_user is None:
+    if not query_user:
         flash("That email isn't in our system.  It looks like you need to sign up!")
         return redirect("/sign-up")
 
@@ -102,8 +97,7 @@ def user_login():
     else:
         session['id'] = query_user.user_id
         flash("Login successful!")
-        print session["id"]
-        return redirect("/")
+        return redirect("/users/" + str(session["id"]))
 
 
 @app.route("/logout")

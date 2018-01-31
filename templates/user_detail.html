@@ -7,12 +7,17 @@
   <h3>Email: {{ user.email }}</h3>
   
   <h2>My Movie List</h2>
-  <ul>
-    {% for rating in user.ratings %}
-      <li>
-        {{rating.movie.title}}: {{rating.score}}
-      </li>
-    {% endfor %}
-  </ul>
+    {% if user.ratings|length == 0 %}
+    <h4>No movies rated yet.</h4>
+    {% else %}
+      <ul>
+        {% for rating in user.ratings %}
+          <li>
+            {{rating.movie.title}}: {{rating.score}}
+          </li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+
 
 {% endblock %}
