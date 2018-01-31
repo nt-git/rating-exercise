@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h2>Registration Form</h2>
+
+<form action="/register", method="POST">
+    <div>
+        <input type="text" name="email" placeholder="Enter your email here">
+    </div>
+    <div>
+        <input type="password" name="password" placeholder="Add your password here">
+    </div>
+    <div>
+        <input type="number" name="age" placeholder="Enter your age here (optional)">
+    </div>
+    <div>
+        <input type="text" name="zip" placeholder="Enter your zipcode here (optional)">
+    </div>
+    <input type="submit" value="REGISTER">
+</form>
+
+{% endblock %}
