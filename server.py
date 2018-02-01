@@ -38,7 +38,7 @@ def movie_list():
 def movie_detail(m_id):
     """Show details about a specific movie."""
 
-    movie = Movie.query.filter_by(movie_id=m_id).one()
+    movie = Movie.query.options(db.joinedload('ratings', 'user')).get(m_id)
 
     return render_template("movie_detail.html", movie=movie)
 
@@ -78,8 +78,8 @@ def user_list():
 @app.route("/users/<u_id>")
 def user_profile(u_id):
     """Shows details about a specific user."""
-
-    user = User.query.filter_by(user_id=u_id).one()
+    user = User.query.options(db.joinedload('ratings','movie')).get(u_id)
+    # user = User.query.filter_by(user_id=u_id).one()
 
     return render_template("user_detail.html", user=user)
 
