@@ -34,36 +34,35 @@ def movie_list():
     return render_template("movie_list.html", movies=movies)
 
 
-@app.route("/movies/<m_id>", methods=["GET"])
-def movie_detail(m_id):
+@app.route("/movies/<movie_id>", methods=["GET"])
+def movie_detail(movie_id):
     """Show details about a specific movie."""
 
-    movie = Movie.query.options(db.joinedload('ratings', 'user')).get(m_id)
+    movie = Movie.query.options(db.joinedload('ratings', 'user')).get(movie_id)
 
     return render_template("movie_detail.html", movie=movie)
 
 
-@app.route("/movies/<m_id>", methods=["POST"])
-def submit_movie_rating(m_id):
+@app.route("/rate/<movie_id>", methods=["POST"])
+def submit_movie_rating(movie_id):
     """Handles user rating for a specific movie."""
 
     score = request.form.get("rating")
-    user = User.query.filter_by(user_id=session["id"]).one()
-    user_id = user.user_id
-    movie = Movie.query.filter_by(movie_id=m_id).one()
-    old_rating = db.session.query(Rating).filter(Rating.movie_id == m_id, Rating.user_id == user_id).first()
+    user_id = User.query.get(session["id"]).user_id
+    movie = Movie.query.get(movie_id)
+    old_rating = db.session.query(Rating).filter(Rating.movie_id == movie_id, Rating.user_id == user_id).first()
 
     if old_rating:
         old_rating.score = score
         db.session.commit()
-        return redirect("/movies/" + str(m_id))
+        flash("Your score for " + movie.title + " has been updated!")
+    else:
+        new_rating = Rating(movie_id=movie_id, user_id=user_id, score=score)
+        db.session.add(new_rating)
+        db.session.commit()
+        flash("Thank you for rating " + movie.title + "!")
 
-    new_rating = Rating(movie_id=m_id, user_id=user_id, score=score)
-
-    db.session.add(new_rating)
-    db.session.commit()
-
-    return redirect("/movies/" + str(m_id))
+    return redirect("/movies/" + str(movie_id))
 
 
 @app.route("/users")
@@ -149,8 +148,6 @@ def user_logout():
         session.clear()
 
     return redirect('/')
-
-
 
 
 if __name__ == "__main__":
