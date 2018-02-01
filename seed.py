@@ -9,6 +9,11 @@ from model import connect_to_db, db
 from server import app
 import datetime
 
+
+from faker import Faker
+fake = Faker()
+
+
 def load_users():
     """Load users from u.user into database."""
 
@@ -22,9 +27,13 @@ def load_users():
     for row in open("seed_data/u.user"):
         row = row.rstrip()
         user_id, age, gender, occupation, zipcode = row.split("|")
-
+        name = fake.name().split()
+        email = "".join(name) + "@hb.com"
+        password = fake.text().split()[0]
         user = User(user_id=user_id,
                     age=age,
+                    email=email,
+                    password=password,
                     zipcode=zipcode)
 
         # We need to add to the session or it won't ever be stored
