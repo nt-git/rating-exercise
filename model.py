@@ -22,7 +22,6 @@ class User(db.Model):
     password = db.Column(db.String(64), nullable=True)
     age = db.Column(db.Integer, nullable=True)
     zipcode = db.Column(db.String(15), nullable=True)
-    # ratings = db.relationship("Rating", backref="users")
 
     def __repr__(self):
         """Provide helpful representation about a user when printed."""
@@ -41,13 +40,12 @@ class Movie(db.Model):
     title = db.Column(db.String(500), nullable=False)
     released_at = db.Column(db.DateTime, nullable=True)
     imdb_url = db.Column(db.String(500), nullable=True)
-    # ratings = db.relationship("Rating", backref="movies")
 
     def __repr__(self):
         """Provide helpful representation about a Movie when printed."""
 
         return "<Movie movie_id={} title={}>".format(self.movie_id,
-                                                   self.title)
+                                                     self.title)
 
 
 class Rating(db.Model):
@@ -67,7 +65,7 @@ class Rating(db.Model):
         """Provide helpful representation about a Rating for Movie when printed."""
 
         return "<Rating rating_id={} movie_title={} score={}>".format(self.rating_id,
-                                                   self.movie.title, self.score)
+                                                                      self.movie.title, self.score)
 
 ##############################################################################
 # Helper functions

@@ -25,6 +25,47 @@ def index():
     return render_template("homepage.html")
 
 
+@app.route("/movies")
+def movie_list():
+    """ Show list of Movies"""
+
+    movies = Movie.query.order_by(Movie.title).all()
+
+    return render_template("movie_list.html", movies=movies)
+
+
+@app.route("/movies/<m_id>", methods=["GET"])
+def movie_detail(m_id):
+    """Show details about a specific movie."""
+
+    movie = Movie.query.filter_by(movie_id=m_id).one()
+
+    return render_template("movie_detail.html", movie=movie)
+
+
+@app.route("/movies/<m_id>", methods=["POST"])
+def submit_movie_rating(m_id):
+    """Handles user rating for a specific movie."""
+
+    score = request.form.get("rating")
+    user = User.query.filter_by(user_id=session["id"]).one()
+    user_id = user.user_id
+    movie = Movie.query.filter_by(movie_id=m_id).one()
+    old_rating = db.session.query(Rating).filter(Rating.movie_id == m_id, Rating.user_id == user_id).first()
+
+    if old_rating:
+        old_rating.score = score
+        db.session.commit()
+        return redirect("/movies/" + str(m_id))
+
+    new_rating = Rating(movie_id=m_id, user_id=user_id, score=score)
+
+    db.session.add(new_rating)
+    db.session.commit()
+
+    return redirect("/movies/" + str(m_id))
+
+
 @app.route("/users")
 def user_list():
     """Show list of users."""
@@ -34,11 +75,11 @@ def user_list():
     return render_template("user_list.html", users=users)
 
 
-@app.route("/users/<id>")
-def user_profile(id):
+@app.route("/users/<u_id>")
+def user_profile(u_id):
     """Shows details about a specific user."""
 
-    user = User.query.filter_by(user_id=id).one()
+    user = User.query.filter_by(user_id=u_id).one()
 
     return render_template("user_detail.html", user=user)
 
@@ -123,5 +164,6 @@ if __name__ == "__main__":
 
     # Use the DebugToolbar
     DebugToolbarExtension(app)
+    app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 
     app.run(port=5000, host='0.0.0.0')
